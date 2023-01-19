@@ -84,11 +84,11 @@ type UserModel struct {
 
 func (u *UserModel) Insert(user *User) error {
 	query := `
-		Insert into users(name, email, password, activated) 
-		values($1, $3, $2, $4) 
+		Insert into users(name, email, password_hash, activated, version) 
+		values($1, $3, $2, $4, $5) 
 		Returning id, created_at, version`
 
-	args := []any{user.Name, user.Password, user.Email, user.Activated}
+	args := []any{user.Name, user.Password.hash, user.Email, user.Activated, uuid.New()}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -96,7 +96,7 @@ func (u *UserModel) Insert(user *User) error {
 	err := u.DB.QueryRow(ctx, query, args...).Scan(&user.ID, &user.Created_at, &user.Version)
 	if err != nil {
 		switch {
-		case err.Error() == `pq: duplicate key value violates unique constraint "users_email_key"`:
+		case err.Error() == `pgx: duplicate key value violates unique constraint "users_email_key"`:
 			return ErrDuplicateEmail
 		default:
 			return err
