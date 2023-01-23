@@ -61,8 +61,8 @@ func main() {
 
 	flag.StringVar(&cfg.smtp.host, "smtp-host", "smtp.office365.com", "SMTP host")
 	flag.IntVar(&cfg.smtp.port, "smtp-port", 587, "SMTP port")
-	flag.StringVar(&cfg.smtp.username, "smtp-username", "Nikita", "SMTP username")
-	flag.StringVar(&cfg.smtp.password, "smtp-password", "Aitu2021!", "SMTP password")
+	flag.StringVar(&cfg.smtp.username, "smtp-username", "211397@astanait.edu.kz", "SMTP username")
+	flag.StringVar(&cfg.smtp.password, "smtp-password", "123456789mmmn", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "211397@astanait.edu.kz", "SMTP sender")
 
 	flag.Parse()
