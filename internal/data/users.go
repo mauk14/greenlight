@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -96,7 +95,7 @@ func (u *UserModel) Insert(user *User) error {
 	err := u.DB.QueryRow(ctx, query, args...).Scan(&user.ID, &user.Created_at, &user.Version)
 	if err != nil {
 		switch {
-		case err.Error() == `pgx: duplicate key value violates unique constraint "users_email_key"`:
+		case err.Error() == `ERROR: duplicate key value violates unique constraint "users_email_key" (SQLSTATE 23505)`:
 			return ErrDuplicateEmail
 		default:
 			return err
@@ -158,9 +157,9 @@ func (u *UserModel) Update(user *User) error {
 	err := u.DB.QueryRow(ctx, query, args...).Scan(&user.Version)
 	if err != nil {
 		switch {
-		case err.Error() == `pq: duplicate key value violates unique constraint "users_email_key"`:
+		case err.Error() == `ERROR: duplicate key value violates unique constraint "users_email_key"`:
 			return ErrDuplicateEmail
-		case errors.Is(err, sql.ErrNoRows):
+		case errors.Is(err, pgx.ErrNoRows):
 			return ErrEditConflict
 		default:
 			return err
