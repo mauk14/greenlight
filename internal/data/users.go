@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -101,7 +100,6 @@ func (u *UserModel) Insert(user *User) error {
 	defer cancel()
 
 	err := u.DB.QueryRow(ctx, query, args...).Scan(&user.ID, &user.Created_at, &user.Version)
-	fmt.Println(err.Error())
 	if err != nil {
 		switch {
 		case err.Error() == `ОШИБКА: повторяющееся значение ключа нарушает ограничение уникальности "users_email_key" (SQLSTATE 23505)`:
