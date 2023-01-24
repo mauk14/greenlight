@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"greenlight.mauk14.net/internal/data"
 	"greenlight.mauk14.net/internal/validator"
 	"net/http"
@@ -85,7 +84,6 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	fmt.Println(err)
 
 	v := validator.New()
 
@@ -95,7 +93,6 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	user, err := app.models.Users.GetForToken(data.ScopeActivation, input.TokenPlaintext)
-	fmt.Println(err)
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
@@ -121,14 +118,12 @@ func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	err = app.models.Tokens.DeleteAllForUser(data.ScopeActivation, user.ID)
-	fmt.Println(err)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
-	fmt.Println(err)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
